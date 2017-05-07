@@ -1,0 +1,31 @@
+FROM centos:7
+MAINTAINER Peter Kester <peter.kester@marklogic.com>
+
+# Get any CentOS updates then clear the Docker cache
+RUN yum -y update && yum clean all
+
+# Install MarkLogic dependencies
+RUN yum -y install glibc.i686 gdb.x86_64 redhat-lsb.x86_64 initscripts
+
+# Set the Path
+#ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/MarkLogic/mlcmd/bin
+
+# Install MarkLogic
+WORKDIR /tmp
+# Copy the MarkLogic installer to a temp directory in the Docker image being built
+COPY MarkLogic-RHEL7-8.0-6.4.x86_64.rpm /tmp/MarkLogic.rpm
+
+COPY initialize-ml.sh /tmp/initialize-ml.sh
+RUN chmod +x /tmp/*.sh
+
+# Install MarkLogic then delete the .RPM file if the install succeeded
+RUN yum -y install ./MarkLogic.rpm && rm ./MarkLogic.rpm
+
+# Expose MarkLogic Server ports
+# Also expose any ports your own MarkLogic App Servers use such as
+# HTTP, REST and XDBC App Servers for your applications
+EXPOSE 7997 7998 7999 8000 8001 8002
+
+# Start MarkLogic from init.d script.
+# Define default command (which avoids immediate shutdown)
+CMD /etc/init.d/MarkLogic start && ./initialize-ml.sh -u $USER -p $PASS -r public && tail -f /dev/null

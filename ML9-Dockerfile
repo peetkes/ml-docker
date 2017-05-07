@@ -1,0 +1,22 @@
+FROM patrickmcelwee/marklogic-dependencies:9.0-EA4
+MAINTAINER Peter Kester <peter.kester@marklogic.com>
+
+# Install MarkLogic
+WORKDIR /tmp
+# Copy the MarkLogic installer to a temp directory in the Docker image being built
+COPY MarkLogic-9.0-20170113.x86_64-EA4.rpm /tmp/MarkLogic.rpm
+
+COPY initialize-ml.sh /tmp/initialize-ml.sh
+RUN chmod +x /tmp/*.sh
+
+# Install MarkLogic then delete the .RPM file if the install succeeded
+RUN yum -y install ./MarkLogic.rpm && rm ./MarkLogic.rpm
+
+# Expose MarkLogic Server ports
+# Also expose any ports your own MarkLogic App Servers use such as
+# HTTP, REST and XDBC App Servers for your applications
+EXPOSE 7997 7998 7999 8000 8001 8002
+
+# Start MarkLogic from init.d script.
+# Define default command (which avoids immediate shutdown)
+CMD /etc/init.d/MarkLogic start && ./initialize-ml.sh -u $USER -p $PASS -r public && tail -f /dev/null
