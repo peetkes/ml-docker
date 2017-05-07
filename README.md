@@ -15,15 +15,15 @@ Make sure you get the installer for CentOS 7
 
 ### Building the Docker image for MarkLogic 8
 
->docker build -f ML8-Dockerfile -t marklogic-img:8.0-6.4-preinstalled.
+>docker build -f ML8-Dockerfile -t marklogic-img:8.0-6.4-preinstalled .
 
 This will create an image with the name "marklogic-img" and the tag "8.0-6.4-preinstalled"
 
 ### Creating the container
 
->docker run -d --name=ml8-initial-build -p 8001:8001 marklogic-img:8.0-6.4-preinstalled
+>docker run -d --name=ml8-initial-build -p 8001:8001 -e USER=admin -e PASS=admin marklogic-img:8.0-6.4-preinstalled
 
-Because of the last line in the Dockerfile the MarkLogic post-initialization is already executed via the initialize-ml.sh script.
+Because of the last line in the Dockerfile the MarkLogic post-initialization is already executed via the initialize-ml.sh script. Make sure to pass in the environment variables for USER and PASS!
 
 >docker commit ml8-initial-build marklogic-img:8.0-6.4-preinstalled
 
@@ -37,7 +37,7 @@ docker rm ml8-initial-build
 
 You can now start the real container ready for use. Here you have the option to set attached volumes, set which ports should be exposed to the host and some other settings.
 
->docker run  -d --name=ml8.build -p 8000-8002:8000-8002 marklogic-img:8.0-6.4-preinstalled
+>docker run  -d --name=ml8.build -p 8000-8002:8000-8002 -e USER=admin -e PASS=admin marklogic-img:8.0-6.4-preinstalled
 
 If you want to persist the database in case of accidental destruction of the container you can install the database on an attached volume with the option -v
 
@@ -45,7 +45,7 @@ If you want to persist the database in case of accidental destruction of the con
 
 If you want to expose more ports for your application you can add extra -p options
 
->docker run  -d --name=ml8.build -p 8000-8002:8000-8002 -p 8040-8042:8040:8042 marklogic-img:8.0-6.4-preinstalled
+>docker run  -d --name=ml8.build -p 8000-8002:8000-8002 -p 8040-8042:8040:8042 -e USER=admin -e PASS=admin marklogic-img:8.0-6.4-preinstalled
 
 You have to be aware of the fact that the ports you use for your container need to be available.
 
@@ -64,7 +64,7 @@ You can remove the container with the following command:
 
 This Dockerfile is based on an image that Patrick McElwee created that has all the MarkLogic 9 prerequisites pre-installed. You can find that one here: https://hub.docker.com/r/patrickmcelwee/marklogic-dependencies/
 
->docker build -f ML9-Dockerfile -t marklogic-img:9.0-1-preinstalled.
+>docker build -f ML9-Dockerfile -t marklogic-img:9.0-1-preinstalled .
 
 This will create an image with the name "marklogic-img" and the tag "8.0-6.4-preinstalled"
 

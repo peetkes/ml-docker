@@ -99,7 +99,7 @@ function restart_check {
 TIMESTAMP=`$CURL "http://$1:8001/admin/v1/timestamp"`
 echo "After ML start TIMESTAMP=$TIMESTAMP"
 
-restart_check $ML_HOST $TIMESTAMP 95
+restart_check $ML_HOST $TIMESTAMP 102
 
 #######################################################
 #  Initialize this host
@@ -110,9 +110,11 @@ echo "Initializing host: $ML_HOST..."
 
 # (1) Initialize MarkLogic Server on the joining host
 TIMESTAMP=`$CURL -X POST -d "" http://${ML_HOST}:8001/admin/v1/init`
-# echo "TIMESTAMP returned=$TIMESTAMP"
+echo "TIMESTAMP returned=$TIMESTAMP"
 
-restart_check $ML_HOST $TIMESTAMP 108
+sleep 5
+
+restart_check $ML_HOST $TIMESTAMP 117
 
 echo "$ML_HOST initialized."
 
@@ -121,7 +123,10 @@ TIMESTAMP=`$CURL -X POST -H "Content-type: application/x-www-form-urlencoded" \
 --data "admin-username=${USER}" --data "admin-password=${PASS}" \
 --data "realm=${SEC_REALM}" \
 http://${ML_HOST}:8001/admin/v1/instance-admin`
-# echo "TIMESTAMP returned=$TIMESTAMP"
+
+echo "TIMESTAMP returned=$TIMESTAMP"
+
+sleep 5
 
 echo "$ML_HOST admin account created"
 

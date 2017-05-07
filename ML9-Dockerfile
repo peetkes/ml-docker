@@ -4,7 +4,7 @@ MAINTAINER Peter Kester <peter.kester@marklogic.com>
 # Install MarkLogic
 WORKDIR /tmp
 # Copy the MarkLogic installer to a temp directory in the Docker image being built
-COPY MarkLogic-9.0-20170113.x86_64-EA4.rpm /tmp/MarkLogic.rpm
+COPY MarkLogic-9.0-1.x86_64.rpm /tmp/MarkLogic.rpm
 
 COPY initialize-ml.sh /tmp/initialize-ml.sh
 RUN chmod +x /tmp/*.sh
