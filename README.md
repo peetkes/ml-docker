@@ -1,6 +1,6 @@
 # ml-docker
 
-This project describes how to build a MarkLogic Docker container.
+This project describes how to build a MarkLogic Docker container and is based on the work of Alan Johnson (https://github.com/alan-johnson/docker-marklogic) and Patrick McElwee (https://hub.docker.com/r/patrickmcelwee/marklogic-dependencies/).
 
 Running MarkLogic inside a Docker container has the advantage that you can switch between versions very easily because they run in an isolated environment. The only thing to keep in mind is that all containers share the hosts cpus, memory and storage.
 
@@ -72,5 +72,18 @@ This will create an image with the name "marklogic-img" and the tag "8.0-6.4-pre
 The steps for creating a ready for use ML9 container are exactly the same as above.
 
 ### Start a node
+The script start-node.sh can be used to start a node. It will take 3 parameters, name image and tag
+It will hard-code the following settings:
+
+-p 8000-8002:8000-8002
+-p 8040-8050:8040-8050
+--cpus=4
+--memory=4g
+-v ~/Development/docker-volumes/$NAME:/var/opt/MarkLogic
+
+> ./start-node.sh -n name -i image -t tag
 
 ### Stop a node
+The script stop-node.sh can be used to stop a running node. It will take 1 parameter, the name.
+
+>./stop-node.sh -n name
